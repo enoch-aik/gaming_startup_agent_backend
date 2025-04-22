@@ -1,5 +1,7 @@
 import datetime
+import json
 
+from google.oauth2 import service_account
 from dotenv import load_dotenv
 from flask import Flask, request
 import os
@@ -146,7 +148,9 @@ def get_chat_history():
     data = request.get_json()
     sessionId = data.get("sessionId")
 
-    client = firestore.Client(project="game-startup-ai-agent")
+    credentials_info = json.loads(os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_JSON"))
+    credentials = service_account.Credentials.from_service_account_info(credentials_info)
+    client = firestore.Client(project="game-startup-ai-agent", credentials=credentials)
 
     # Initialize Firestore Chat Message History
     chat_history = FirestoreChatMessageHistory(
