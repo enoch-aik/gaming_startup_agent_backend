@@ -2,6 +2,7 @@ import datetime
 
 from dotenv import load_dotenv
 from flask import Flask, request
+import os
 from google.cloud import firestore
 from langchain_google_firestore import FirestoreChatMessageHistory
 from langchain_openai import ChatOpenAI
