@@ -60,7 +60,9 @@ def start_chat():
     session_name = username + "_"+formattedQuery.content + "_" + str(currentTimestamp)
     
     # Initialize Firestore Client
-    client = firestore.Client(project="game-startup-ai-agent")
+    credentials_info = json.loads(os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_JSON"))
+    credentials = service_account.Credentials.from_service_account_info(credentials_info)
+    client = firestore.Client(project="game-startup-ai-agent", credentials=credentials)
 
     # Initialize Firestore Chat Message History
     chat_history = FirestoreChatMessageHistory(
@@ -113,7 +115,9 @@ def continue_chat():
     #chat_uid = str(uuid.uuid4())
     
     # Initialize Firestore Client
-    client = firestore.Client(project="game-startup-ai-agent")
+    credentials_info = json.loads(os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_JSON"))
+    credentials = service_account.Credentials.from_service_account_info(credentials_info)
+    client = firestore.Client(project="game-startup-ai-agent", credentials=credentials)
 
     # Initialize Firestore Chat Message History
     chat_history = FirestoreChatMessageHistory(
