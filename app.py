@@ -59,9 +59,16 @@ def start_chat():
   
     session_name = username + "_"+formattedQuery.content + "_" + str(currentTimestamp)
     
+# Check if the app is in deployment or production
+    if os.environ.get("ENV") == "production":
+        # Use credentials from the environment variable
+        credentials_info = json.loads(os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_JSON"))
+        credentials = service_account.Credentials.from_service_account_info(credentials_info)
+    else:
+        # Exclude credentials in deployment
+        credentials = None
+
     # Initialize Firestore Client
-    credentials_info = json.loads(os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_JSON"))
-    credentials = service_account.Credentials.from_service_account_info(credentials_info)
     client = firestore.Client(project="game-startup-ai-agent", credentials=credentials)
 
     # Initialize Firestore Chat Message History
@@ -89,7 +96,7 @@ def start_chat():
         "message": "Chat started successfully.",
         "title":formattedQuery.content,
         "sessionId": session_name,
-        "data": formatted_result,
+        "content": formatted_result,
         "type": result.type,
         }, 200
 
@@ -114,9 +121,16 @@ def continue_chat():
     model = ChatOpenAI(model="gpt-4o")
     #chat_uid = str(uuid.uuid4())
     
+    # Check if the app is in deployment or production
+    if os.environ.get("ENV") == "production":
+        # Use credentials from the environment variable
+        credentials_info = json.loads(os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_JSON"))
+        credentials = service_account.Credentials.from_service_account_info(credentials_info)
+    else:
+        # Exclude credentials in deployment
+        credentials = None
+
     # Initialize Firestore Client
-    credentials_info = json.loads(os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_JSON"))
-    credentials = service_account.Credentials.from_service_account_info(credentials_info)
     client = firestore.Client(project="game-startup-ai-agent", credentials=credentials)
 
     # Initialize Firestore Chat Message History
@@ -152,8 +166,16 @@ def get_chat_history():
     data = request.get_json()
     sessionId = data.get("sessionId")
 
-    credentials_info = json.loads(os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_JSON"))
-    credentials = service_account.Credentials.from_service_account_info(credentials_info)
+    # Check if the app is in deployment or production
+    if os.environ.get("ENV") == "production":
+        # Use credentials from the environment variable
+        credentials_info = json.loads(os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_JSON"))
+        credentials = service_account.Credentials.from_service_account_info(credentials_info)
+    else:
+        # Exclude credentials in deployment
+        credentials = None
+
+    # Initialize Firestore Client
     client = firestore.Client(project="game-startup-ai-agent", credentials=credentials)
 
     # Initialize Firestore Chat Message History
@@ -182,7 +204,9 @@ def get_chat_history():
     
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
-
+    if os.environ.get("ENV") == "production":
+        port = int(os.environ.get("PORT", 5000))
+        app.run(host='0.0.0.0', port=port)
+    else:
+        app.run(debug=True)
 
