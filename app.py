@@ -4,17 +4,28 @@ import json
 from google.oauth2 import service_account
 from dotenv import load_dotenv
 from flask import Flask, request
+from flask_cors import CORS
 import os
 from google.cloud import firestore
 from langchain_google_firestore import FirestoreChatMessageHistory
 from langchain_openai import ChatOpenAI
+from langchain_xai import ChatXAI
+from chat.chat import chatWithAgent
 
 # Load environment variables from .env
 load_dotenv()
 app = Flask(__name__)
 
+# Set up CORS
+CORS(app)
+
 @app.route("/")
 def hello_world():
+    # chat = ChatXAI(
+    # # xai_api_key="YOUR_API_KEY",
+    # model="grok-beta")
+    # for m in chat.stream("Who is the president of the USA?"):
+    #     print(m.content, end="", flush=True)
     return "Hello, World!"
 
 
@@ -118,7 +129,7 @@ def continue_chat():
             "error": "SessionID is required to continue chat."}, 400
     
     #load the main chat model
-    model = ChatOpenAI(model="gpt-4o")
+    # model = ChatOpenAI(model="gpt-4o")
     #chat_uid = str(uuid.uuid4())
     
     # Check if the app is in deployment or production
@@ -145,7 +156,8 @@ def continue_chat():
     chat_history.add_user_message(query)
 
     # Generate a response from the model
-    result = model.invoke(chat_history.messages)
+    # result = model.invoke(chat_history.messages)
+    result = chatWithAgent(query,sessionId)
 
     formatted_result = str(result.content)
     # Add the model's response to the chat history
