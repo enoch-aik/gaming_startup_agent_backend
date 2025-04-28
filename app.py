@@ -3,11 +3,12 @@ import json
 
 from google.oauth2 import service_account
 from dotenv import load_dotenv
-from flask import Flask, request
+from flask import Flask, request, jsonify, stream_with_context, Response
 from flask_cors import CORS
 import os
 from google.cloud import firestore
 from langchain_google_firestore import FirestoreChatMessageHistory
+from langchain_core.messages import  SystemMessage
 from langchain_openai import ChatOpenAI
 from langchain_xai import ChatXAI
 from chat.chat import chatWithAgent
@@ -50,7 +51,13 @@ def start_chat():
         return {"result":False,
             "error": "Query is required to start conversation."}, 400
 
-    technicalPrototypePrompt = "You are senior game developer who specializes in rapid prototyping and engine-level problem-solving.  I will describe a game mechanic or idea, and your task is to evaluate the feasibility of a game concept by analyzing technical requirements, identifying skill required in the design and development team, and recommend tools/engines and your role is to evaluate its technical feasibility"
+    technicalPrototypePrompt = "You are senior game developer who specializes in rapid prototyping " \
+    "and engine-level problem-solving.  I will describe a game mechanic or idea, and your task " \
+    "is to evaluate the feasibility of a game concept by analyzing technical requirements, " \
+    "identifying skill required in the design and development team, and recommend tools/engines" \
+    " and your role is to evaluate its technical feasibility. Also, for every information you" \
+    " send as a response to the user, if you have used any tool, add the link to the article " \
+    "or sources at the end of the chat."
 
 
     #load the small 3.5 chat model  to only summarize the first query
@@ -90,7 +97,8 @@ def start_chat():
     )
 
     # Add the initial system message to the chat history
-    chat_history.add_user_message(technicalPrototypePrompt)
+    systemMessage = SystemMessage(content=technicalPrototypePrompt)
+    chat_history.add_message(systemMessage)
 
     # Add the user message to the chat history
     chat_history.add_user_message(query)
@@ -109,6 +117,7 @@ def start_chat():
         "sessionId": session_name,
         "content": formatted_result,
         "type": result.type,
+        "shouldAnimate": True,
         }, 200
 
 
@@ -160,15 +169,47 @@ def continue_chat():
     result = chatWithAgent(query,sessionId)
 
     formatted_result = str(result.content)
+    # @stream_with_context
+    # def generate_response():
+    #     response_buffer = ""
+    #     for chunk in chatWithAgent(query, sessionId):
+    #         # Save the chunk to Firestore incrementally
+    #         chat_history.add_ai_message(chunk)
+
+    #         # Append the chunk to the response buffer
+    #         response_buffer += chunk
+
+    #         # Yield the chunk to the client
+    #         yield json.dumps({"result": True,
+    #     "message": "Conversation continued successfully.",
+    #     "content": response_buffer,
+    #     "type": "ai",})
+
+    #     # Save the full response to Firestore
+    #     chat_history.add_ai_message(response_buffer)
+        
+    #     return response_buffer
+
+    # print(generate_response())
+    # # response_stream = generate_response()
+    # response = Response(
+    #     generate_response(),
+    #     content_type='application/json',
+    # )
+
+    # return response
     # Add the model's response to the chat history
-    chat_history.add_ai_message(formatted_result)
+    chat_history.add_ai_message(result)
 
     return {
         "result": True,
         "message": "Conversation continued successfully.",
         "content": formatted_result,
         "type": result.type,
-        }, 200
+        "shouldAnimate": True,
+        },200
+    
+    
 
 
 #get chat history from firestore, the payload would be a username and a collection name and a session id

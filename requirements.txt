@@ -51,6 +51,7 @@ humanfriendly==10.0
 idna==3.10
 importlib_metadata==8.6.1
 importlib_resources==6.5.2
+iniconfig==2.1.0
 itsdangerous==2.2.0
 Jinja2==3.1.6
 jiter==0.9.0
@@ -59,12 +60,14 @@ jsonpointer==3.0.0
 jsonschema==4.23.0
 jsonschema-specifications==2025.4.1
 kubernetes==32.0.1
-langchain==0.3.23
-langchain-community==0.3.21
+langchain==0.3.24
+langchain-community==0.3.22
 langchain-core==0.3.55
 langchain-google-firestore==0.5.0
 langchain-openai==0.3.14
+langchain-pinecone==0.2.5
 langchain-tavily==0.1.5
+langchain-tests==0.3.19
 langchain-text-splitters==0.3.8
 langchain-xai==0.2.3
 langgraph==0.3.34
@@ -72,6 +75,7 @@ langgraph-checkpoint==2.0.24
 langgraph-prebuilt==0.1.8
 langgraph-sdk==0.1.63
 langsmith==0.3.33
+Markdown==3.8
 markdown-it-py==3.0.0
 MarkupSafe==3.0.2
 marshmallow==3.26.1
@@ -102,6 +106,9 @@ orjson==3.10.16
 ormsgpack==1.9.1
 overrides==7.7.0
 packaging==24.2
+pinecone==6.0.2
+pinecone-plugin-interface==0.0.7
+pluggy==1.5.0
 posthog==4.0.0
 propcache==0.3.1
 proto-plus==1.26.1
@@ -114,6 +121,9 @@ pydantic_core==2.33.1
 Pygments==2.19.1
 PyPika==0.48.9
 pyproject_hooks==1.2.0
+pytest==8.3.5
+pytest-asyncio==0.26.0
+pytest-socket==0.7.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.1.0
 PyYAML==6.0.2
@@ -132,6 +142,7 @@ soupsieve==2.7
 SQLAlchemy==2.0.40
 starlette==0.45.3
 sympy==1.13.3
+syrupy==4.9.1
 tenacity==9.1.2
 tiktoken==0.9.0
 tokenizers==0.21.1
@@ -151,5 +162,6 @@ wikipedia==1.4.0
 wrapt==1.17.2
 xxhash==3.5.0
 yarl==1.20.0
+youtube-search==2.1.2
 zipp==3.21.0
 zstandard==0.23.0
