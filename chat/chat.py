@@ -1,5 +1,9 @@
 import os
 import getpass
+import sys
+
+# Add the /tools directory to the Python path
+sys.path.append(os.path.join(os.path.dirname(__file__), "../tools/langchain-tavily"))
 
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
