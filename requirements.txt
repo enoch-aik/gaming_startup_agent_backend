@@ -66,7 +66,6 @@ langchain-core==0.3.55
 langchain-google-firestore==0.5.0
 langchain-openai==0.3.14
 langchain-pinecone==0.2.5
-langchain-tavily==0.1.5
 langchain-tests==0.3.19
 langchain-text-splitters==0.3.8
 langchain-xai==0.2.3
