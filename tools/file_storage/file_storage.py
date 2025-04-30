@@ -20,19 +20,17 @@ def store_file(image_file):
     """
     # Strip any trailing whitespace or newline characters
     image_file = image_file.strip()
-    if os.environ.get("ENV") == "production":
-        # Use credentials from the environment variable
-        credential_info = json.loads(os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_JSON"))
-        credential = service_account.Credentials.from_service_account_info(credential_info)
-    else:
-        # Exclude credentials in deployment
-        credential = None
 
     # Initialize Firebase Admin SDK
-    cred = credentials.Certificate("/Users/enochaikpokpodion/Downloads/game-startup-ai-agent-4e9b990c6152.json")
     if not firebase_admin._apps:  # Check if Firebase app is already initialized
-        # Initialize Firebase Admin SDK
-        cred = credentials.Certificate("/Users/enochaikpokpodion/Downloads/game-startup-ai-agent-4e9b990c6152.json")
+        if os.environ.get("ENV") == "production":
+            # Use credentials from the environment variable
+            credential_info = json.loads(os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_JSON"))
+            cred = credentials.Certificate(credential_info)
+        else:
+            # Use local credentials in development
+            cred = credentials.Certificate("/Users/enochaikpokpodion/Downloads/game-startup-ai-agent-4e9b990c6152.json")
+        
         firebase_admin.initialize_app(cred, {
             'storageBucket': 'game-startup-ai-agent.firebasestorage.app'
         })
