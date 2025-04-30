@@ -11,7 +11,7 @@ from urllib.parse import urlparse
 # Load environment variables from .env
 load_dotenv()
 
-url = "https://www.gamedeveloper.com/design/book-excerpt-world-design-for-2d-action-adventures"
+url = "https://adventuregamers.com/articles/reviews"
 parsed_url = urlparse(url)
 # indexName = parsed_url.path.lstrip("/")  # Extract the path after .com/
 indexName = "ai-agent-test"
@@ -33,7 +33,7 @@ def create_vector_store():
     # Crawl the website using FireCrawlLoader
     print("Begin crawling the website...")
     loader = FireCrawlLoader(
-        api_key=api_key, url=url,  mode="scrape")
+        api_key=api_key, url=url,  mode="crawl")
     docs = loader.load()
     print("Finished crawling the website.")
 

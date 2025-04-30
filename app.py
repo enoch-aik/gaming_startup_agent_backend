@@ -71,7 +71,7 @@ def start_chat():
 
     #invoke small model to summarize the first query
     formattedQuery = querySummarizerModel.invoke("I want you to summarize the following " \
-    "query into 3 to 4 words in such a way that it is a 2nd party summary: " + query)
+    "query into 3 to 4 words in such a way that it is a 2nd party summary. It should not be more than 1 line. The summary is: " + query)
 
     currentTimestamp = datetime.datetime.now().timestamp()
   
@@ -104,7 +104,8 @@ def start_chat():
     chat_history.add_user_message(query)
 
     # Generate a response from the model
-    result = model.invoke(chat_history.messages)
+    # result = model.invoke(chat_history.messages)
+    result = chatWithAgent(query,session_name)
 
     formatted_result = str(result.content)
     # Add the model's response to the chat history

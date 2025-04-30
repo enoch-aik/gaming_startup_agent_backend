@@ -14,7 +14,7 @@ from langchain.agents import (
     create_react_agent,
 )
 from langchain_tavily import TavilySearch
-from langchain_core.tools import Tool
+from langchain_core.tools import Tool, StructuredTool
 from langchain.schema import AIMessage
 from langchain.memory import ConversationBufferMemory, ChatMessageHistory
 from langchain_core.chat_history import InMemoryChatMessageHistory
@@ -28,8 +28,12 @@ from langchain_community.tools.openai_dalle_image_generation import (
 from langchain_community.utilities.dalle_image_generator import DallEAPIWrapper
 
 
+
 from memory.memory import getChatMemory
 from rag.vector_store import customRetriever, contextualize_q_prompt, qa_prompt
+from tools.image_gen.image_gen import generateDalle3Image, editDalle3Image, edit_tool_parser, EditImageStringsArgs, parser
+from tools.file_storage.file_storage import store_file, get_image_file_from_url
+from tools.sound_effect.sound_effect import generate_sound_effect
 
 
 # 0.3.23
@@ -60,6 +64,7 @@ def search_wikipedia(query):
         return "I couldn't find any information on that."
 
 
+
 def chatWithAgent(query, sessionId):
     indexName = "ai-agent-test"
     load_dotenv()
@@ -67,26 +72,41 @@ def chatWithAgent(query, sessionId):
         os.environ["TAVILY_API_KEY"] = getpass.getpass("Tavily API key:\n")
     model = ChatOpenAI(model="gpt-4o")
     embedding = OpenAIEmbeddings(model="text-embedding-3-small")
-
     # prompt = hub.pull("hwchase17/structured-chat-agent")
-
     # react_docstore_prompt = hub.pull("hwchase17/react")
+    # The tag ![Music] has to be used in the out so that the user can preview the sound effect in the markdown.
+    # If you need to use the Generate sound effect tool, you should give the output in a markdown format ![Music](https://storedfile.mp3) .
     prompt = PromptTemplate(
         input_variables=["tools", "tool_names", "input", "agent_scratchpad", "chat_history"],
+        partial_variables={"format_instructions": edit_tool_parser()},
         template="""
-        You are a great AI-Assistant that has access to additional tools in order to answer the following questions as best you can. Always answer in the same language as the user question. You have access to the following tools:
+        You are a great AI-Agent that is designed to assist game developers and game startups or studios to test their ideas and validate their assumptions. Your default language is English and you have access to additional tools in order to answer the following questions as best you can. Always answer in the same language as the user question. You have access to the following tools:
 
         {tools}
 
         You should also access the chat history to answer the question. You can use the tools to get more information, but you should only use them if you think it will help you answer the question better.
         
+        Always prioritize the Answer Question tool as it uses Retrieval-Augmented Generation (RAG) to answer the question and after using this tool, check if you need to use any other tool. After that, you return the answer to the user.
         The chat history is as follows:
         {chat_history}
 
+        If you need to use the Edit image tool, you should only use it once and you must include both the "image" and "query" fields in the Action Input. an exampe is below
+        Action Input: {{"image":"https://storage.googleapis.com/game-startup-ai-agent.firebasestorage.app/img-gsHV1XsWihjjMErL3xpl06Cm.png",
+        "query":"Add a cat to the image"}}.
+
+        The Edit image tool does would return an image url that has already been stored on FirebaseStorage, so you return the image to the user alongise a description of the image and the thought process behind the design and in a case where the user is modifying the image, add futher description based on the user's request.
+
+        If you need to use the Get image file tool, make sure that there are no extra spaces or characters like ``` or " added to the image url
+
+        If you need to use the Generate image tool, you should get the image file with the Get image file tool and then, use the Store file tool to store the image in Firebase Storage and the Store File tool would return the download URL. 
+        Your response should have the stored image url from FirebaseStorage first (do not send the image url from the Generate image tool as a response). After, you give a description of the image and the thought process behind the design and in a case where the user is modifying the image, add futher description based on the user's request.
+        
         Always try to see if you can use the tools and for responses, include the link to the article or sources at the end of the chat. You can use the tools to get more information, but you should only use them if you think it will help you answer the question better.
         
         To use a tool, please use the following format:
 
+        
+        The for every image you return to the user, it should be in the format ![Image](< put the image url here so that it can be decoded in the markdown).
         '''
         Thought: Do I need to use a tool? Yes
         Action: the action to take, should be one of [{tool_names}]
@@ -133,7 +153,7 @@ def chatWithAgent(query, sessionId):
     question_answer_chain = create_stuff_documents_chain(model, qa_prompt)
 
     rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
-    api_wrapper = DallEAPIWrapper()
+
 
     tools = [
         TavilySearch(
@@ -147,10 +167,53 @@ def chatWithAgent(query, sessionId):
             func=lambda input, **kwargs: rag_chain.invoke(
                 {"input": input, "chat_history": kwargs.get("chat_history", memory.chat_memory.messages)}
             ),
-            description="Useful when you need to answer questions based on a context",
+            description="Useful when you need to answer questions",
         ),
         YouTubeSearchTool(),
-        # OpenAIDALLEImageGenerationTool(api_wrapper=api_wrapper)
+        Tool(
+            name="Generate image",
+            func=generateDalle3Image,
+            description="Useful for when you need to generate images from text",
+        ),
+        # editDalle3Image,
+        Tool(
+            name="Generate sound effect",
+            func=generate_sound_effect,
+            description="Useful for when you need to generate sound effects from text",
+        ),
+        Tool(
+            name="Edit image",
+            func=editDalle3Image,
+            description="Useful for when you need to edit images when a previous image has been generated and the user wants to modify it",
+        ),
+        # Tool(
+        #     name="Edit image",
+        #     func=lambda input, **kwargs: editDalle3Image(input["image"], input["query"]),
+        #     description="Useful for when you need to edit images when a previous image has been generated and the user wants to modify it",
+        # ),
+
+        # Tool(
+        #     name="Get edit image action input format",
+        #     func = parser,
+        #     description="Useful for when you need to get the action input format for the Edit image tool",
+
+        # ),
+        # StructuredTool.from_function(
+        #     editDalle3Image,
+        #     name="Edit image",
+        #     description="Useful for when you need to edit images when a previous image has been generated and the user wants to modify it",
+        #     args_schema=EditImageStringsArgs,
+        # ),
+        Tool(
+            name="Get image file",
+            func=get_image_file_from_url,
+            description="Useful for when you need to get the image file from a URL"
+        ),
+        Tool(
+            name="Store file",
+            func=store_file,
+            description="Useful for when you need to store files in Firebase Storage after generating them",
+        ),
     ]
 
     # agent = create_structured_chat_agent(llm=model, tools=tools, prompt=prompt)
