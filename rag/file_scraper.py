@@ -128,6 +128,7 @@ def create_vector_store():
         batch_size = 100  # Adjust the batch size as needed to stay within the 2MB limit
         for batch in split_into_batches(docs, batch_size):
             PineconeVectorStore.from_documents(batch, embeddings, index_name=indexName)            
+
 create_vector_store()
 
 

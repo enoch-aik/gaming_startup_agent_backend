@@ -103,6 +103,9 @@ def chatWithAgent(query, sessionId):
         
         Always try to see if you can use the tools and for responses, include the link to the article or sources at the end of the chat. You can use the tools to get more information, but you should only use them if you think it will help you answer the question better.
         
+        If you are asked a question and you try to use a tool but it fails, you should try to answer the question without using the tool. If you are not able to answer the question, you should say that you are not able to answer the question and suggest that the user try again later.
+
+        If you are asked a question about a game idea, you should try to answer the question by comprehensively explaining abou how feasible the game is in terms of development and also skills needed to develop the game. Also identify the potential genre and the current market or userbase of the game, remember to use the Answer Question tool and the Tavily Search tool to get more information on questions about game ideas. Once you are done, return the answer comprehensively and also include a link to the article or sources at the end of the chat. 
         To use a tool, please use the following format:
 
         
@@ -145,7 +148,7 @@ def chatWithAgent(query, sessionId):
         query,
         embedding,
         "mmr",
-        {"k": 5, "fetch_k": 20, "lambda_mult": 0.5},
+        {"k": 5, "fetch_k": 10, "lambda_mult": 0.5},
     )
     history_aware_retriever = create_history_aware_retriever(
         model, retriever, contextualize_q_prompt
