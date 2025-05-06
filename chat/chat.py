@@ -107,7 +107,7 @@ def chatWithAgent(query, sessionId):
 
         If you are asked about any information that requires getting the latest information, it should be dated to 2025
         
-        Also, if you are asked about current statistics for a game try to search these websites https://games-stats.com/steam/tags/, https://steamdb.info
+        Also, if you are asked about current statistics for a game try to search these websites https://games-stats.com/steam/tags/ , https://steamdb.info
         If you are asked a question about a game idea, you should try to answer the question by comprehensively explaining about how feasible the game is in terms of development and also skills needed to develop the game, for each skill mention the number of people that would be needed. Also identify the potential genre and the current market or userbase of the game, remember to use the Answer Question tool or Tavily Search tool if you have not used it aready to get more information on questions about game ideas. Once you are done, return the answer comprehensively and also include a link to the article or sources at the end of the chat. 
         To use a tool, please use the following format:
 
