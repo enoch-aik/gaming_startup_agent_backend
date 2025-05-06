@@ -86,7 +86,7 @@ def chatWithAgent(query, sessionId):
 
         You should also access the chat history to answer the question. You can use the tools to get more information, but you should only use them if you think it will help you answer the question better.
         
-        Always prioritize the Answer Question tool as it uses Retrieval-Augmented Generation (RAG) to answer the question and after using this tool, check if you need to use any other tool. After that, you return the answer to the user.
+        Always prioritize the Answer Question tool and TavilySearch tool as it uses Retrieval-Augmented Generation (RAG) to answer the question and after using this tool, check if you need to use any other tool. After that, you return the answer to the user.
         The chat history is as follows:
         {chat_history}
 
@@ -105,6 +105,9 @@ def chatWithAgent(query, sessionId):
         
         If you are asked a question and you try to use a tool but it fails, you should try to answer the question without using the tool. If you are not able to answer the question, you should say that you are not able to answer the question and suggest that the user try again later.
 
+        If you are asked about any information that requires getting the latest information, it should be dated to 2025
+        
+        Also, if you are asked about current statistics for a game try to search these websites https://games-stats.com/steam/tags/, https://steamdb.info
         If you are asked a question about a game idea, you should try to answer the question by comprehensively explaining about how feasible the game is in terms of development and also skills needed to develop the game, for each skill mention the number of people that would be needed. Also identify the potential genre and the current market or userbase of the game, remember to use the Answer Question tool or Tavily Search tool if you have not used it aready to get more information on questions about game ideas. Once you are done, return the answer comprehensively and also include a link to the article or sources at the end of the chat. 
         To use a tool, please use the following format:
 
@@ -115,10 +118,10 @@ def chatWithAgent(query, sessionId):
         Action: the action to take, should be one of [{tool_names}]
         Action Input: the input to the action
         Observation: the result of the action
-        ... (this Thought/Action/Action Input/Observation can repeat 3 times)
+        ... (this Thought/Action/Action Input/Observation can repeat 2 times)
         '''
 
-        When you have a response to say to the Human, or if you do not need to use a tool, you MUST use the format:
+        When you have a response to respond comprehensively to the Human, or if you do not need to use a tool, you MUST use the format:
         '''
         Thought: Do I need to use a tool? No
         '''
@@ -164,6 +167,19 @@ def chatWithAgent(query, sessionId):
             tavily_api_key="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",
             descrption="Useful for when you need to answer questions about the latest news",
             #  include_domains=["gamedeveloper.com","ign.com","youtube.com","polygon.com"],
+        ),
+        TavilySearch(
+            max_results=5,
+            tavily_api_key="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",
+            descrption="Useful for when you need to get the latest information on the current market stats for a game genre",
+            include_domains=["https://games-stats.com/steam/tags/"],
+            #  include_domains=["gamedeveloper.com","ign.com","youtube.com","polygon.com"],
+        ),
+        TavilySearch(
+            max_results=5,
+            tavily_api_key="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",
+            descrption="Useful for when you need to get the latest information on the statistics for a game",
+            include_domains=["https://steamdb.info"],
         ),
         Tool(
             name="Answer Question",

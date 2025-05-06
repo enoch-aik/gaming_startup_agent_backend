@@ -36,7 +36,7 @@ llm = ChatOpenAI(model="gpt-4o")
 # This system prompt helps the AI understand that it should reformulate the question
 # based on the chat history to make it a standalone question
 contextualize_q_system_prompt = (
-    "Given a chat history and the latest user question "
+    "The current year is 2025, given a chat history and the latest user question "
     "which might reference context in the chat history, "
     "formulate a standalone question which can be understood "
     "without the chat history. Do NOT answer the question, just "
