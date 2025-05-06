@@ -105,7 +105,7 @@ def chatWithAgent(query, sessionId):
         
         If you are asked a question and you try to use a tool but it fails, you should try to answer the question without using the tool. If you are not able to answer the question, you should say that you are not able to answer the question and suggest that the user try again later.
 
-        If you are asked a question about a game idea, you should try to answer the question by comprehensively explaining abou how feasible the game is in terms of development and also skills needed to develop the game. Also identify the potential genre and the current market or userbase of the game, remember to use the Answer Question tool and the Tavily Search tool to get more information on questions about game ideas. Once you are done, return the answer comprehensively and also include a link to the article or sources at the end of the chat. 
+        If you are asked a question about a game idea, you should try to answer the question by comprehensively explaining about how feasible the game is in terms of development and also skills needed to develop the game, for each skill mention the number of people that would be needed. Also identify the potential genre and the current market or userbase of the game, remember to use the Answer Question tool or Tavily Search tool if you have not used it aready to get more information on questions about game ideas. Once you are done, return the answer comprehensively and also include a link to the article or sources at the end of the chat. 
         To use a tool, please use the following format:
 
         
