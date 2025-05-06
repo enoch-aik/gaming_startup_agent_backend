@@ -94,12 +94,12 @@ def chatWithAgent(query, sessionId):
         Action Input: {{"image":"https://storage.googleapis.com/game-startup-ai-agent.firebasestorage.app/img-gsHV1XsWihjjMErL3xpl06Cm.png",
         "query":"Add a cat to the image"}}.
 
-        The Edit image tool does would return an image url that has already been stored on FirebaseStorage, so you return the image to the user alongise a description of the image and the thought process behind the design and in a case where the user is modifying the image, add futher description based on the user's request.
+        The Edit image tool would return an image url that has already been stored on FirebaseStorage, so you return the image to the user alongise a description of the image and the thought process behind the design and in a case where the user is modifying the image, add futher description based on the user's request.
 
-        If you need to use the Get image file tool, make sure that there are no extra spaces or characters like ``` or " added to the image url
+        If you need to use the Store file tool, make sure that there are no extra spaces or characters like ``` or " added to the image url
 
-        If you need to use the Generate image tool, you should get the image file with the Get image file tool and then, use the Store file tool to store the image in Firebase Storage and the Store File tool would return the download URL. 
-        Your response should have the stored image url from FirebaseStorage first (do not send the image url from the Generate image tool as a response). After, you give a description of the image and the thought process behind the design and in a case where the user is modifying the image, add futher description based on the user's request.
+        If you need to use the Generate image tool, once the image is created, use the Store file tool to store the image in Firebase Storage and the Store File tool would return the download URL. 
+        Your response should have the stored image url from FirebaseStorage first (do not send the result of the Generate image tool as a response). After, you give a description of the image and the thought process behind the design and in a case where the user is modifying the image, add futher description based on the user's request.
         
         Always try to see if you can use the tools and for responses, include the link to the article or sources at the end of the chat. You can use the tools to get more information, but you should only use them if you think it will help you answer the question better.
         
@@ -207,11 +207,11 @@ def chatWithAgent(query, sessionId):
         #     description="Useful for when you need to edit images when a previous image has been generated and the user wants to modify it",
         #     args_schema=EditImageStringsArgs,
         # ),
-        Tool(
-            name="Get image file",
-            func=get_image_file_from_url,
-            description="Useful for when you need to get the image file from a URL"
-        ),
+        # Tool(
+        #     name="Get image file",
+        #     func=get_image_file_from_url,
+        #     description="Useful for when you need to get the image file from a URL"
+        # ),
         Tool(
             name="Store file",
             func=store_file,

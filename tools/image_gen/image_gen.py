@@ -25,12 +25,23 @@ def generateDalle3Image(query: str):
     prompt=query,
     size="1024x1024",
     quality="standard",
+    response_format="b64_json",
     n=1,
     )
 
-    print("Response:", response.data)
-    image_url = response.data[0].url
-    return image_url
+    # print("Response:", response.data)
+    # image_url = response.data[0].url
+    # return image_url
+    generated_image_base64 = response.data[0].b64_json
+    generated_image_bytes = base64.b64decode(generated_image_base64)
+
+    # Save the image to a unique file name
+    file_name = f"generated_image_{int(time.time())}.png"
+    temp_file_path = os.path.join("/tmp", file_name)  # Save to a temporary directory
+    with open(temp_file_path, "wb") as f:
+        f.write(generated_image_bytes)
+
+    return temp_file_path
 
 
 class EditImageStringsArgs(BaseModel):

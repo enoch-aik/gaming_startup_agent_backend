@@ -96,8 +96,8 @@ def get_image_file_from_url(url):
             f.write(response.content)
         return temp_file_path
     else:
-        return url
-        # raise Exception(f"Failed to download image from {url}. HTTP status code: {response.status_code}")
+        # return url
+        raise Exception(f"Failed to download image from {url}. HTTP status code: {response.status_code}")
     
 
 
