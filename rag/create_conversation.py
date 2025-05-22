@@ -3,7 +3,6 @@ import os
 from dotenv import load_dotenv
 from langchain.chains import create_history_aware_retriever, create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain_community.vectorstores import Chroma
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
@@ -99,7 +98,7 @@ def continual_chat():
         # Process the user's query through the retrieval chain
         result = rag_chain.invoke({"input": query, "chat_history": chat_history})
         # Display the AI's response
-        print(f"AI: {result['answer']}")
+        # print(f"AI: {result['answer']}")
         # Update the chat history
         chat_history.append(HumanMessage(content=query))
         chat_history.append(SystemMessage(content=result["answer"]))
@@ -115,7 +114,7 @@ def query_vector_store(
     store_name, query, embedding, search_type, search_kwargs
 ):
     
-    print(f"\n--- Querying the Vector Store {store_name} ---")
+    # print(f"\n--- Querying the Vector Store {store_name} ---")
     db = PineconeVectorStore(index_name=indexName,embedding=embedding)
     retriever = db.as_retriever(
             search_type=search_type,
@@ -123,6 +122,6 @@ def query_vector_store(
         )
     relevant_docs = retriever.invoke(query)
     # Display the relevant results with metadata
-    print(f"\n--- Relevant Documents for {store_name} ---")
+    # print(f"\n--- Relevant Documents for {store_name} ---")
     return relevant_docs
     

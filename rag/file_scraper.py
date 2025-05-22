@@ -8,9 +8,14 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_pinecone import PineconeVectorStore
 from bs4 import BeautifulSoup
 
+# this is used to add the scraped_data directory to the path when a set of .md files have been added to the /rag/scraped_data directory
 currentDir = os.path.dirname(os.path.abspath(__file__))
 scrapedDataDir = os.path.join(currentDir, "scraped_data")
+
+# this is the index name for the vector store on Pinecone
 indexName = "ai-agent-test"
+
+# this is the embedding model used to create the vector store
 embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
 
 def get_all_files_in_scraped_data():
@@ -35,6 +40,11 @@ def get_all_files_in_scraped_data():
 def convert_filename_to_url(filename):
     """
     Converts a file name into the desired URL format.
+
+    Args:
+        filename (str): The file name to convert.
+    Returns:
+        str: The converted URL.
     
     Example:
     Input: www_gamedeveloper_com_programming_get_a_job_join_jackbox_games_as_a_sr_gameplay_engineer_2.md

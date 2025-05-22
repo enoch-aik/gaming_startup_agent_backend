@@ -22,12 +22,7 @@ CORS(app)
 
 @app.route("/")
 def hello_world():
-    # chat = ChatXAI(
-    # # xai_api_key="YOUR_API_KEY",
-    # model="grok-beta")
-    # for m in chat.stream("Who is the president of the USA?"):
-    #     print(m.content, end="", flush=True)
-    return "Hello, World!"
+    return "API service is up and running!"
 
 
 @app.route("/start_chat", methods=["POST"])

@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from elevenlabs.client import ElevenLabs
 from elevenlabs import play
-from tools.file_storage.file_storage import store_file, get_image_file_from_url
+from tools.file_storage.file_storage import store_file
 from uuid import uuid4
 
 
@@ -11,6 +11,10 @@ from uuid import uuid4
 def generate_sound_effect(query: str):
     """
     Generate a sound effect using ElevenLabs API.
+    Args:
+        query (str): The text prompt for the sound effect.
+    Returns:
+        str: The URL of the generated sound effect.
     """
     # Load environment variables from .env file
     load_dotenv()

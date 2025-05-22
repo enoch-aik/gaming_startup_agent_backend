@@ -22,7 +22,7 @@ def queryVectorStore(indexName, query, embedding, search_type, search_kwargs):
     # Display the relevant results with metadata
     return relevant_docs
 
-
+# Function to create a history-aware retriever
 def customRetriever(indexName, query, embedding, search_type, search_kwargs):
     db = PineconeVectorStore(index_name=indexName, embedding=embedding)
     return db.as_retriever(
@@ -31,7 +31,6 @@ def customRetriever(indexName, query, embedding, search_type, search_kwargs):
     )
     
 
-embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
 
 contextualize_q_system_prompt = (
     "Given a chat history and the latest user question "
@@ -51,8 +50,7 @@ contextualize_q_prompt = ChatPromptTemplate.from_messages(
 )
 
 
-# Create a history-aware retriever
-# This uses the LLM to help reformulate the question based on chat history
+
 
 
 # Answer question prompt

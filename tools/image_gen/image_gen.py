@@ -4,7 +4,6 @@ import os
 import time
 import base64
 from pydantic import BaseModel, Field
-from langchain.agents import tool
 from langchain.output_parsers import PydanticOutputParser
 from tools.file_storage.file_storage import store_file, get_image_file_from_url
 

@@ -1,7 +1,6 @@
 import firebase_admin
 import os
 import json
-from google.oauth2 import service_account
 import requests
 
 from firebase_admin import credentials, storage
@@ -28,7 +27,7 @@ def store_file(image_file):
             credential_info = json.loads(os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_JSON"))
             cred = credentials.Certificate(credential_info)
         else:
-            # Use local credentials in development
+            # Use local credentials in development, it is currently saved in the local directory
             cred = credentials.Certificate("/Users/enochaikpokpodion/Downloads/game-startup-ai-agent-4e9b990c6152.json")
         
         firebase_admin.initialize_app(cred, {

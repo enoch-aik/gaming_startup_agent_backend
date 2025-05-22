@@ -3,7 +3,6 @@ import os
 from dotenv import load_dotenv
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_community.document_loaders import FireCrawlLoader
-from langchain_community.vectorstores import Chroma
 from langchain_pinecone import PineconeVectorStore
 from langchain_openai import OpenAIEmbeddings
 from urllib.parse import urlparse
@@ -11,6 +10,7 @@ from urllib.parse import urlparse
 # Load environment variables from .env
 load_dotenv()
 
+# Define the URL to crawl
 url = "https://adventuregamers.com/articles/reviews"
 parsed_url = urlparse(url)
 # indexName = parsed_url.path.lstrip("/")  # Extract the path after .com/
@@ -21,12 +21,12 @@ db_dir = os.path.join(current_dir, "db")
 persistent_directory = os.path.join(db_dir, "chroma_db_firecrawl")
 
 def create_vector_store():
+    # Load environment variables from .env
+    load_dotenv()
     """Crawl the website, split the content, create embeddings, and persist the vector store."""
     # Defining the Firecrawl API key
-    if os.environ.get("ENV") == "production":
-        api_key = os.getenv("FIRECRAWL_API_KEY")
-    else:
-        api_key = "fc-baccd519c4054c7787a7b71b8d963202"
+    
+    api_key = os.getenv("FIRECRAWL_API_KEY")
     if not api_key:
         raise ValueError("FIRECRAWL_API_KEY environment variable not set")
 
@@ -72,17 +72,22 @@ def create_vector_store():
 #     print(
 #         f"Vector store {persistent_directory} already exists. No need to initialize.")
 
-# Load the vector store with the embeddings
-embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+
 # db = PineconeVectorStore(index_name=indexName,
 #             embedding=embeddings)
 
 # db = create_vector_store()
 
 
-# Step 5: Query the vector store
+
 def query_vector_store(query):
     """Query the vector store with the specified question."""
+
+    # Load environment variables from .env
+    load_dotenv()
+    # Load the vector store with the embeddings
+    embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+
     # Create a retriever for querying the vector store
     db = PineconeVectorStore(index_name=indexName,
                              embedding=embeddings)
