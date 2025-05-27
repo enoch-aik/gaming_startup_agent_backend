@@ -62,8 +62,7 @@ pip install -r requirements.txt
 ### 3. Set Up Environment Variables
 - Create a `.env` file in the root directory and add your OpenAI API key, Pinecone API key, and Firebase credentials. Example:
 ```bash
-export OPEN
-OPENAI_API_KEY='your_openai_api_key'
+export OPENAI_API_KEY='your_openai_api_key'
 export PINECONE_API_KEY='your_pinecone_api_key'
 export FIREBASE_CREDENTIALS='path_to_your_firebase_credentials.json'
 ```
